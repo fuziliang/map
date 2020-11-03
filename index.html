@@ -1,99 +1,109 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>线/面/圆可编辑</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <style>
-    html,
     body,
+    html,
     #container {
-      width: 100%;
-      height: 100%;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-family: "微软雅黑";
+    }
+    ul li {
+        list-style: none;
+    }
+    .drawing-panel {
+        z-index: 999;
+        position: fixed;
+        bottom: 3.5rem;
+        margin-left: 3rem;
+        padding: 1rem 1rem;
+        border-radius: .25rem;
+        background-color: #fff;
+        box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+    }
+    .btn {
+        width: 150px;
+        height: 30px;
+        float: left;
+        background-color: #fff;
+        color: rgba(27, 142, 236, 1);
+        font-size: 14px;
+        border:1px solid rgba(27, 142, 236, 1);
+        border-radius: 5px;
+        margin: 0 5px;
+        text-align: center;
+        line-height: 30px;
+    }
+    .btn:hover {
+        background-color: rgba(27, 142, 236, 0.8);
+        color: #fff;
     }
     </style>
-    <title>多边形的绘制和编辑</title>
-    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
-    <script src="https://webapi.amap.com/maps?v=1.4.15&key=您申请的key值&plugin=AMap.PolyEditor&plugin=AMap.MouseTool&plugin=AMap.MapType"></script>
-    <script src="https://a.amap.com/jsapi_demos/static/demo-center/js/demoutils.js"></script>
+    <script src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=8GzmIYXLG2UV3e1iUsbBgzujeMmKEPxR"></script>
 </head>
 <body>
-<div id="container"></div>
-<div class="input-card" style="width: 120px">
-    <input type="text" name="name" id="test" style="margin-bottom: 5px"/> 
-    <input type="button" name="button" value="提交" onclick="print()" style="margin-bottom: 5px"/>
-   <button class="btn" onclick="polyEditor.open()" style="margin-bottom: 5px">开始编辑</button> 
-   <button class="btn" onclick="polyEditor.close()">结束编辑</button> 
-</div>
-<script type="text/javascript">
-    var map = new AMap.Map("container", {
-        center: [112.868589,23.657488],
-	layers: [new AMap.TileLayer.Satellite()],
-        zoom: 14
-    });
-	
-    map.addControl(new AMap.MapType({
-            defaultType:1 //0代表默认，1代表卫星
-        }));
-
-    var path = [
-        [112.855505,23.656919],
-        [112.854088,23.653027],
-        [112.860521,23.653997]
-    ]
-
-    var polygon = new AMap.Polygon({
-        path: path,
-        strokeColor: "#FF33FF", 
-        strokeWeight: 6,
-        strokeOpacity: 0.2,
-        fillOpacity: 0.4,
-        fillColor: '#1791fc',
-        zIndex: 50,
-    })
-
-    map.add(polygon)
-    // 缩放地图到合适的视野级别
-    map.setFitView([ polygon ])
-
-    var polyEditor = new AMap.PolyEditor(map, polygon)
-
-    polyEditor.on('addnode', function(event) {
-        // log.info('触发事件：addnode')
-    })
-
-    polyEditor.on('adjust', function(event) {
-        // log.info('触发事件：adjust')
-    })
-
-    polyEditor.on('removenode', function(event) {
-        // log.info('触发事件：removenode')
-    })
-
-    polyEditor.on('end', function(event) {
-        // log.info('触发事件： end')
-        // event.target 即为编辑后的多边形对象
-        var list = event.target.Ce.path
-        var len = list.length
-        var list1 = ""
-        for (let i = 0; i < len; i++) {
-            list1 +="[" + list[i].lng +"," + list[i].lat + "]" + ","         
-        }
-        console.log(list1)
-    })
-
-    function print(){    
-	   var a=document.getElementById("test").value;    
-	   console.log(map.Ce.center.lng)
-       console.log(map.Ce.center.lat)
-       var arr = a.split(',')
-    //    console.log(arr)
-       map.Ce.center.lng = arr[0]
-       map.Ce.center.lat = arr[1]
-       console.log(map.Ce.center.lng)
-       console.log(map.Ce.center.lat)
-       map.setCenter([map.Ce.center.lng, map.Ce.center.lat])
-	  }
-</script>
+    <div id="container"></div>
+    <ul class="drawing-panel" style="z-index: 99;">
+        <li class = "btn" onclick = "openEdit()">开启线/面/圆可编辑</li>
+        <li class = "btn" onclick = "closeEdit()">关闭线/面/圆可编辑</li>
+    </ul>
 </body>
 </html>
+
+<script>
+var map = new BMapGL.Map('container');
+var point = new BMapGL.Point(116.404, 39.915);
+map.centerAndZoom(point, 15);
+map.enableScrollWheelZoom(true);
+
+// 绘制面
+var polygon = new BMapGL.Polygon([
+    new BMapGL.Point(116.387112, 39.920977),
+    new BMapGL.Point(116.385243, 39.913063),
+    new BMapGL.Point(116.394226, 39.917988),
+    new BMapGL.Point(116.401772, 39.921364),
+    new BMapGL.Point(116.41248, 39.927893)
+], {
+    strokeColor: 'blue',
+    strokeWeight: 2,
+    strokeOpacity: 0.5
+});
+map.addOverlay(polygon);
+// 绘制线
+var polyline = new BMapGL.Polyline([
+    new BMapGL.Point(116.399, 39.910),
+    new BMapGL.Point(116.405, 39.920),
+    new BMapGL.Point(116.423493, 39.907445)
+], {
+    strokeColor: 'blue',
+    strokeWeight: 2,
+    strokeOpacity: 0.5
+});
+map.addOverlay(polyline);
+// 绘制圆
+var circle = new BMapGL.Circle(new BMapGL.Point(116.404, 39.915), 500, {
+    strokeColor: 'blue',
+    strokeWeight: 2,
+    strokeOpacity: 0.5
+});
+map.addOverlay(circle);
+
+function openEdit() {
+    polyline.enableEditing();
+    polygon.enableEditing();
+    circle.enableEditing();
+}
+function closeEdit() {
+    polygon.disableEditing();
+    polyline.disableEditing();
+    circle.disableEditing();
+}
+</script>
