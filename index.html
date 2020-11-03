@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8">
-    <title>线/面/圆可编辑</title>
+    <title>百毒地图</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
@@ -52,58 +52,50 @@
 <body>
     <div id="container"></div>
     <ul class="drawing-panel" style="z-index: 99;">
-        <li class = "btn" onclick = "openEdit()">开启线/面/圆可编辑</li>
-        <li class = "btn" onclick = "closeEdit()">关闭线/面/圆可编辑</li>
+        <li class = "btn" onclick = "openEdit()">开启编辑</li>
+        <li class = "btn" onclick = "closeEdit()">关闭编辑</li>
     </ul>
 </body>
 </html>
 
 <script>
-var map = new BMapGL.Map('container');
-var point = new BMapGL.Point(116.404, 39.915);
+var map = new BMapGL.Map('container',{mapType: BMAP_HYBRID_MAP});
+var point = new BMapGL.Point(112.867599,23.655013);
 map.centerAndZoom(point, 15);
 map.enableScrollWheelZoom(true);
+map.addControl(new BMapGL.MapTypeControl({
+		mapTypes: [
+            BMAP_HYBRID_MAP,
+            BMAP_NORMAL_MAP,
+			
+		]
+	}));
+
 
 // 绘制面
 var polygon = new BMapGL.Polygon([
-    new BMapGL.Point(116.387112, 39.920977),
-    new BMapGL.Point(116.385243, 39.913063),
-    new BMapGL.Point(116.394226, 39.917988),
-    new BMapGL.Point(116.401772, 39.921364),
-    new BMapGL.Point(116.41248, 39.927893)
+    new BMapGL.Point(112.867096,23.657661),
+    new BMapGL.Point(112.865299,23.65402),
+    new BMapGL.Point(112.868677,23.653888)
 ], {
-    strokeColor: 'blue',
+    strokeColor: 'red',
     strokeWeight: 2,
     strokeOpacity: 0.5
 });
 map.addOverlay(polygon);
-// 绘制线
-var polyline = new BMapGL.Polyline([
-    new BMapGL.Point(116.399, 39.910),
-    new BMapGL.Point(116.405, 39.920),
-    new BMapGL.Point(116.423493, 39.907445)
-], {
-    strokeColor: 'blue',
-    strokeWeight: 2,
-    strokeOpacity: 0.5
-});
-map.addOverlay(polyline);
-// 绘制圆
-var circle = new BMapGL.Circle(new BMapGL.Point(116.404, 39.915), 500, {
-    strokeColor: 'blue',
-    strokeWeight: 2,
-    strokeOpacity: 0.5
-});
-map.addOverlay(circle);
+
 
 function openEdit() {
-    polyline.enableEditing();
     polygon.enableEditing();
-    circle.enableEditing();
 }
 function closeEdit() {
     polygon.disableEditing();
-    polyline.disableEditing();
-    circle.disableEditing();
+    var list = polygon.getPath()
+    var element = ""
+    for (let i = 0; i < list.length-1; i++) {
+         element +="[" + list[i].lat + "," + list[i].lng + "],"
+        
+    }
+    console.log(element)
 }
 </script>
