@@ -14,7 +14,7 @@
     </style>
     <title>多边形的绘制和编辑</title>
     <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
-    <script src="https://webapi.amap.com/maps?v=1.4.15&key=您申请的key值&plugin=AMap.PolyEditor&plugin=AMap.MouseTool"></script>
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=您申请的key值&plugin=AMap.PolyEditor&plugin=AMap.MouseTool&plugin=AMap.MapType"></script>
     <script src="https://a.amap.com/jsapi_demos/static/demo-center/js/demoutils.js"></script>
 </head>
 <body>
@@ -31,6 +31,10 @@
 	layers: [new AMap.TileLayer.Satellite()],
         zoom: 14
     });
+	
+    map.addControl(new AMap.MapType({
+            defaultType:0 //0代表默认，1代表卫星
+        }));
 
     var path = [
         [113.750799,23.024651],
